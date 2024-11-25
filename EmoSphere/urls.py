@@ -28,6 +28,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),  # Django 관리자 URL
     path('api/', include('emotions.urls')),  # 'api/' 하위 URL 매핑
     path('emotions/', include('emotions.urls')),  # emotions 앱의 URL 포함(emotions 앱의 URL 패턴을 가져와 /emotions/ 경로로 연결)
-    path('', home)
-
+    path('', home),
+    path('logout/', LogoutView.as_view(), name='logout')
 ]

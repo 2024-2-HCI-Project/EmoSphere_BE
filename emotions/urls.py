@@ -1,10 +1,13 @@
 from django.urls import path
-from .views import EmotionView  # 앱 내 views.py의 EmotionView 가져오기
-from .views import LoginView
+from .views.emotion_views import EmotionListView, EmotionDetailView
+from .views.auth_views import LoginView
 
 urlpatterns = [
-    path('', EmotionView.as_view(), name='emotion-home'),  # /emotions/
-    path('<int:id>/', EmotionView.as_view(), name='emotion-detail'),  # /emotions/<id>/
-        path('login/', LoginView.as_view(), name='api-login'),
-    path('logout/', LoginView.as_view(), name='api-logout'),
+    # Emotion 관련 URL
+    path('emotions/', EmotionListView.as_view(), name='emotion-list'),  # /emotions/
+    path('emotions/<int:id>/', EmotionDetailView.as_view(), name='emotion-detail'),  # /emotions/<id>/
+
+    # 사용자 인증 관련 URL
+    path('api/users/login/', LoginView.as_view(), name='api-login'),  # /api/users/login/
+    path('api/users/logout/', LoginView.as_view(), name='api-logout'),  # /api/users/logout/
 ]
