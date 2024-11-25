@@ -1,0 +1,5 @@
+serializers.py
+-- 데이터를 JSON 형식으로 변환하거나, JSON 요청을 Python 객체로 변환
+
+view.py
+-- HTTP 요청을 처리하고 JSON 응답을 반환

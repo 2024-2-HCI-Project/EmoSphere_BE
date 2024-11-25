@@ -1,0 +1,19 @@
+# Python 환경
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+
+# 가상환경
+venv/
+.venv/
+
+# 데이터베이스
+*.sqlite3
+
+# 환경 파일
+.env
+
+# 기타
+.DS_Store
+*.log
