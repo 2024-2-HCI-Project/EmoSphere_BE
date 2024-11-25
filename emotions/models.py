@@ -8,7 +8,7 @@ class Emotion(models.Model):
     )
     emotion_type = models.CharField(max_length=50)
     intensity = models.PositiveSmallIntegerField()
-    timestamp = models.DateTimeField()
+    timestamp = models.DateTimeField(auto_now_add=True)
     content = models.TextField(blank=True, null=True)
     attachment = models.FileField(upload_to='uploads/emotions/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
