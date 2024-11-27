@@ -3,3 +3,6 @@ Django==5.1.3
 sqlparse==0.5.2
 typing_extensions==4.12.2
 tzdata==2024.2
+drf-yasg
+pyyaml
+coreapi

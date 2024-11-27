@@ -1,22 +1,21 @@
-"""
-URL configuration for EmoSphere project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
+from django.contrib.auth.views import LoginView, LogoutView
+from emotions.views.auth_views import LoginView, LogoutView
 from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+from rest_framework.permissions import AllowAny
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title="Emotion API",
+        default_version="v1",
+        description="API documentation for EmoSphere",
+    ),
+    public=True,
+    permission_classes=(AllowAny,),
+)
 
 # 간단한 루트 페이지 응답
 def home(request):
@@ -24,7 +23,11 @@ def home(request):
 
 urlpatterns = [
     path('admin/', admin.site.urls),  # Django 관리자 URL
-    path('emotions/', include('emotions.urls')),  # emotions 앱의 URL 포함(emotions 앱의 URL 패턴을 가져와 /emotions/ 경로로 연결)
-    path('', home)
+    path('api/emotions/', include('emotions.urls')),  # emotions 앱 URL을 '/api/emotions/'로 매핑
+    path('api/users/login/', LoginView.as_view(), name='api-login'),  # 로그인 URL
+    path('api/users/logout/', LogoutView.as_view(), name='api-logout'),  # 로그아웃 URL
+    path('', home, name='home'),  # 루트 경로
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 
 ]
