@@ -9,6 +9,11 @@ class EmotionAPITestCase(TestCase):
         User.objects.filter(username="testuser").delete()
         self.user = User.objects.create_user(username="testuser", password="password123")
         self.client.login(username="testuser", password="password123")
+    
+    def test_signup(self):
+        response = self.client.post('/users/signup/', {"username": "newuser", "password": "newpassword123"})
+        self.assertEqual(response.status_code, 201)
+        self.assertIn("message", response.json())
 
     def test_login(self):
         response = self.client.post('/api/emotions/users/login/', {"username": "testuser", "password": "password123"})
