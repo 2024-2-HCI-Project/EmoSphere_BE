@@ -3,8 +3,11 @@ from emotions.views.auth_views import SignUpView, LoginView, LogoutView
 from emotions.views.emotion_views import EmotionListView, EmotionDetailView, PlanetEmotionView
 from emotions.views.emotion_burn_views import EmotionBurnView
 from emotions.views.statistics_views import EmotionStatisticsView
+from .views import csrf_token_view
 
 urlpatterns = [
+    path('csrf/', csrf_token_view, name='csrf-token'),
+
      # 사용자 인증 관련
     path('users/signup/', SignUpView.as_view(), name='user-signup'),  # 회원가입
     path('users/login/', LoginView.as_view(), name='user-login'),  # 로그인
