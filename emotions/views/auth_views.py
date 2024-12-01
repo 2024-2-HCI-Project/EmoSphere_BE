@@ -1,10 +1,12 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from django.contrib.auth.models import User
 from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 class SignUpView(APIView):
     """
@@ -16,7 +18,8 @@ class SignUpView(APIView):
     새로운 사용자를 등록합니다.
 
     **요청 데이터**:
-    - `username` (string): 사용자 이름 (필수)
+    - `name` (string): 사용자 이름 (필수)
+    - `id` (string): 사용자 ID (필수, 고유해야 함)
     - `password` (string): 비밀번호 (필수)
 
     **응답 데이터**:
@@ -25,23 +28,44 @@ class SignUpView(APIView):
 
     **응답 코드**:
     - `201`: 사용자 생성 성공
-    - `400`: 잘못된 요청 (필요한 데이터 누락 또는 사용자 이름 중복)
+    - `400`: 잘못된 요청 (필요한 데이터 누락 또는 사용자 ID 중복)
     """
+
+    @swagger_auto_schema(
+        operation_summary="회원가입",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'name': openapi.Schema(type=openapi.TYPE_STRING, description='사용자 이름'),
+                'id': openapi.Schema(type=openapi.TYPE_STRING, description='사용자 ID (username으로 저장)'),
+                'password': openapi.Schema(type=openapi.TYPE_STRING, description='사용자 비밀번호'),
+            },
+            required=['name', 'id', 'password']
+        ),
+        responses={
+            201: "User created successfully",
+            400: "Invalid request data or duplicate ID",
+        },
+    )
     def post(self, request):
-        username = request.data.get('username')
+        name = request.data.get('name')
+        username = request.data.get('id')  # 'id'를 Django의 username으로 저장
         password = request.data.get('password')
 
         # 유효성 검사
-        if not username or not password:
-            raise ValidationError({"error": "Username and password are required"})
+        if not name or not username or not password:
+            raise ValidationError({"error": "Name, ID, and password are required"})
 
         # 중복 사용자 확인
         if User.objects.filter(username=username).exists():
-            raise ValidationError({"error": "Username already exists"})
+            raise ValidationError({"error": "ID already exists"})
 
         # 사용자 생성
-        user = User.objects.create_user(username=username, password=password)
-        return Response({"message": "User created successfully", "user_id": user.id}, status=status.HTTP_201_CREATED)
+        user = User.objects.create_user(username=username, password=password, first_name=name)
+        return Response(
+            {"message": "User created successfully", "user_id": user.id},
+            status=status.HTTP_201_CREATED
+        )
 
 class LoginView(APIView):
     """
